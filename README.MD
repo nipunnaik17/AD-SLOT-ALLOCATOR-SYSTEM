@@ -1,29 +1,34 @@
+Here is your **fixed and professionally formatted** version (clean, resume/GitHub ready, with improved grammar and structure):
+
+---
 
 ## 🚀 Ad Slot Allocator System (Knapsack-Based Optimization)
 
-This project implements an **Ad Slot Allocation System** that uses the **Knapsack Algorithm** to maximize total revenue by optimally selecting advertisement bids under time and slot constraints.
-
-### 🔍 Problem Statement
-
-Given multiple advertisers with:
-
-* Bid Amount (Value)
-* Ad Duration (Weight)
-* Available Slot Capacity (Total Time)
-
-The system applies the **0/1 Knapsack Algorithm** to select the optimal combination of ads that maximizes total revenue without exceeding available slot time.
+This project implements an **Ad Slot Allocation System** that leverages the **0/1 Knapsack Algorithm** to maximize total advertising revenue by optimally selecting advertisement bids under time constraints.
 
 ---
 
-### 🧠 Algorithm Used
+## 🔍 Problem Statement
 
-* 0/1 Knapsack (Dynamic Programming approach)
-* Revenue maximization under constraint optimization
-* Time complexity: O(n × W)
+Given multiple advertisers, each with:
+
+* **Bid Amount (Value)**
+* **Ad Duration (Weight)**
+* **Available Slot Capacity (Total Time Limit)**
+
+The system selects the optimal combination of ads that maximizes total revenue without exceeding the available advertisement time.
 
 ---
 
-### 🛠 Tech Stack
+## 🧠 Algorithm Used
+
+* **0/1 Knapsack Algorithm** (Dynamic Programming approach)
+* Constraint-based revenue optimization
+* Time Complexity: **O(n × W)**
+
+---
+
+## 🛠 Tech Stack
 
 * Node.js
 * Express.js
@@ -33,28 +38,32 @@ The system applies the **0/1 Knapsack Algorithm** to select the optimal combinat
 
 ---
 
-### ✨ Features
+## ✨ Key Features
 
-* Bid validation (minimum threshold logic)
-* Optimal ad selection using Knapsack algorithm
-* RESTful backend API
-* MongoDB data persistence
-* Real-time bid submission
-* Clean modular architecture
+* Bid validation with minimum threshold logic
+* Optimal ad selection using Knapsack optimization
+* RESTful backend API architecture
+* MongoDB database integration
+* Real-time bid submission and processing
+* Clean, modular project structure
 
 ---
 
-### 📈 Why This Project?
+## 📈 Project Highlights
 
 This project demonstrates:
 
-* Algorithm implementation in real-world use case
-* Backend system design
-* Optimization problem solving
-* Database integration
-* Full-stack development skills
+* Practical implementation of optimization algorithms
+* Backend system architecture design
+* Database integration and API development
+* Full-stack application development
+* Real-world revenue maximization use case
 
- 
+---
+
+## 📂 Project Structure
+
+```
 ├── node_modules/
 │
 ├── public/
@@ -73,7 +82,7 @@ This project demonstrates:
 ├── package.json
 ├── package-lock.json
 └── README.md
+```
 
-
-
+---
 

@@ -54,23 +54,17 @@ This project demonstrates:
 * Database integration
 * Full-stack development skills
 
-DBS-PROJECT-FINAL/
-│
+ 
 ├── node_modules/
 │
 ├── public/
-│   ├── html/
-│   │   ├── index.html
-│   │   ├── bidding.html
-│   │   └── result.html
-│   │
-│   ├── css/
-│   │   ├── input.css
-│   │   └── output.css
-│   │
-│   └── js/
-│       ├── input.js
-│       └── bidding.js
+│   ├── index.html
+│   ├── bidding.html
+│   ├── result.html
+│   ├── input.css
+│   ├── output.css
+│   ├── input.js
+│   └── bidding.js
 │
 ├── src/
 │   └── bidding.js
@@ -81,6 +75,5 @@ DBS-PROJECT-FINAL/
 └── README.md
 
 
----
 
 

@@ -1,4 +1,4 @@
-Here is your **fixed and professionally formatted** version (clean, resume/GitHub ready, with improved grammar and structure):
+
 
 ---
 
@@ -85,4 +85,5 @@ This project demonstrates:
 ```
 
 ---
+
 

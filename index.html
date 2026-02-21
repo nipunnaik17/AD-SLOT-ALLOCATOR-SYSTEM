@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Portal</title>
+  <link rel="stylesheet" href="output.css" />
+  <style>
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateX(-30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fadeIn {
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    .animate-slideIn {
+      animation: slideIn 1s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-red-500 to-blue-500 min-h-screen font-sans font-bold p-6">
+
+  <!-- Login Form -->
+  <div id="start" class="animate-fadeIn">
+    <form id="loginForm">
+      <div class="bg-red-500 shadow-xl rounded-3xl p-6 max-w-7xl ml-30 mt-5">
+        <div class="grid grid-cols-5 items-center gap-8">
+          <div>
+            <img src="Weber’s Tv.png" alt="Channel's Logo" class="w-30 ml-4">
+          </div>
+          <input type="text" id="login_user" placeholder="Email"
+            class="bg-gray-100 text-black font-bold border border-gray-300 text-lg p-3 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all duration-300" required />
+          <input type="password" id="login_pass" placeholder="Password"
+            class="bg-gray-100 text-black font-bold border border-gray-300 text-lg p-3 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all duration-300" required />
+          <button type="submit"
+            class="bg-amber-400 hover:bg-amber-500 text-black text-lg font-extrabold py-3 px-6 rounded-2xl transition duration-300 transform hover:scale-105 mt-2">
+            Login
+          </button>
+          <div class="text-sm font-bold mt-2">
+            <label class="flex items-center space-x-2">
+              <input type="checkbox" id="remember_me" class="accent-green-500"> <span>Remember Me</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sign-Up Form -->
+  <div id="adjust" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 animate-slideIn">
+    <!-- Side Image -->
+    <div class="flex justify-center items-center">
+      <img src="dbsfinal.avif" alt="side image" class="rounded-2xl shadow-2xl w-172 h-auto">
+    </div>
+
+    <!-- Signup Form -->
+    <form id="signupForm" class="bg-gradient-to-r from-amber-300 to-orange-400 shadow-xl rounded-3xl p-8">
+      <h2 class="text-3xl font-extrabold text-center mb-2">FREE SIGN UP</h2>
+      <p class="text-center mb-6 text-gray-800 font-semibold">Sign-up takes less than 30 seconds.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="company_name" placeholder="Company Name"
+          class="bg-white p-3 rounded-xl border font-semibold border-gray-300 focus:ring-2 focus:ring-orange-500 transition" required>
+        <input type="text" id="signup_user" placeholder="Username"
+          class="bg-white p-3 rounded-xl border font-semibold border-gray-300 focus:ring-2 focus:ring-orange-500 transition" required>
+        <input type="password" id="signup_pass" placeholder="Password"
+          class="bg-white p-3 rounded-xl border font-semibold border-gray-300 focus:ring-2 focus:ring-orange-500 transition" required>
+        <input type="email" id="signup_email" placeholder="Email"
+          class="bg-white p-3 rounded-xl border font-semibold border-gray-300 focus:ring-2 focus:ring-orange-500 transition" required>
+        <input type="text" id="signup_mobile" placeholder="Mobile Number"
+          class="bg-white p-3 rounded-xl border font-semibold border-gray-300 focus:ring-2 focus:ring-orange-500 transition" required>
+        <input type="text" id="signup_gstin" placeholder="GSTIN / Company ID"
+          class="bg-white p-3 rounded-xl border font-semibold border-gray-300 focus:ring-2 focus:ring-orange-500 transition" required>
+      </div>
+
+      <div class="my-4">
+        <label class="flex items-start space-x-2 text-sm font-bold">
+          <input type="checkbox" id="Check" class="mt-1 accent-green-600" required>
+          <span>I accept the Terms and Conditions and the Privacy Policy of Weber's TV.</span>
+        </label>
+      </div>
+
+      <div class="flex justify-center">
+        <button type="submit"
+          class="bg-green-500 hover:bg-green-600 text-white text-lg font-extrabold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
+          Sign Up
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:5000";
+
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = document.getElementById("login_user").value.trim().toLowerCase();
+      const password = document.getElementById("login_pass").value.trim();
+      try {
+        const response = await fetch(`${API_URL}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Login failed!");
+        alert("✅ Login successful!");
+        localStorage.setItem("token", data.token);
+        window.location.href = "bidding.html";
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
+    });
+
+    document.getElementById("signupForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const company_name = document.getElementById("company_name").value;
+      const username = document.getElementById("signup_user").value;
+      const email = document.getElementById("signup_email").value;
+      const password = document.getElementById("signup_pass").value;
+      const mobile = document.getElementById("signup_mobile").value;
+      const gstin = document.getElementById("signup_gstin").value;
+      try {
+        const response = await fetch(`${API_URL}/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ company_name, username, email, password, mobile, gstin })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "Sign-up failed!");
+        alert("✅ Sign-up successful! Please log in.");
+        document.getElementById("start").scrollIntoView({ behavior: "smooth" });
+      } catch (error) {
+        alert("❌ Error: " + error.message);
+      }
+    });
+  </script>
+</body>
+</html>

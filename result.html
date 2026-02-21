@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bidding Results</title>
+  <link rel="stylesheet" href="output.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-r from-red-500 to-blue-500 p-6 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-7xl mx-auto bg-gradient-to-r from-white to-blue-200 rounded-2xl shadow-2xl p-6 animate-fadeIn transition duration-700 ease-in-out">
+    <h1 class="text-4xl font-extrabold text-center text-gray-800 mb-10 pt-4 animate-fadeIn">Bidding Results</h1>
+
+    <div class="mb-8 text-center">
+      <label for="date" class="block mb-2 font-semibold text-lg text-gray-700">Select Date:</label>
+      <input type="date" id="date" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300" />
+      <button onclick="fetchAllocations()" class="ml-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300 shadow-lg">Get Results</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="transition-transform duration-500 hover:scale-[1.02]">
+        <h2 class="text-2xl font-bold mb-3 text-green-800 text-center">Allocated Bidders</h2>
+        <table class="min-w-full bg-white shadow-md rounded-xl overflow-hidden text-center animate-fadeIn">
+          <thead class="bg-green-100 text-gray-700">
+            <tr>
+              <th class="py-3 px-4">Company</th>
+              <th class="py-3 px-4">Email</th>
+              <th class="py-3 px-4">Hours</th>
+              <th class="py-3 px-4">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="allocatedTable"></tbody>
+        </table>
+      </div>
+
+      <div class="transition-transform duration-500 hover:scale-[1.02]">
+        <h2 class="text-2xl font-bold mb-3 text-red-800 text-center">Unallocated Bidders</h2>
+        <table class="min-w-full bg-white shadow-md rounded-xl overflow-hidden text-center animate-fadeIn">
+          <thead class="bg-red-100 text-gray-700">
+            <tr>
+              <th class="py-3 px-4">Company</th>
+              <th class="py-3 px-4">Email</th>
+              <th class="py-3 px-4">Hours</th>
+              <th class="py-3 px-4">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="unallocatedTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="mt-10">
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Allocation Chart</h2>
+      <canvas id="allocationPieChart" class="mx-auto max-w-xs shadow-2xl rounded-2xl animate-fadeIn delay-200"></canvas>
+    </div>
+  </div>
+
+  <script>
+    let pieChart;
+
+    async function fetchAllocations() {
+      const date = document.getElementById('date').value;
+      if (!date) {
+        alert('Please select a date.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/allocate/${date}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+
+        const data = await res.json();
+        const { allocated, unallocated } = data;
+
+        renderTable('allocatedTable', allocated);
+        renderTable('unallocatedTable', unallocated);
+        updateChart(allocated.length, unallocated.length);
+      } catch (err) {
+        console.error('Error fetching allocation data:', err);
+      }
+    }
+
+    function renderTable(tableId, bids) {
+      const tableBody = document.getElementById(tableId);
+      tableBody.innerHTML = '';
+
+      if (!bids.length) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-gray-400">No Data</td></tr>`;
+        return;
+      }
+
+      bids.forEach(bid => {
+        const row = document.createElement('tr');
+        row.classList.add("hover:bg-gray-100", "transition", "duration-300");
+        row.innerHTML = `
+          <td class="border px-4 py-2">${bid.username}</td>
+          <td class="border px-4 py-2">${bid.email}</td>
+          <td class="border px-4 py-2">${bid.hoursPerDay || 0}</td>
+          <td class="border px-4 py-2">₹${bid.amount}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function updateChart(allocatedCount, unallocatedCount) {
+      const ctx = document.getElementById('allocationPieChart').getContext('2d');
+      if (pieChart) pieChart.destroy();
+
+      pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Allocated', 'Unallocated'],
+          datasets: [{
+            data: [allocatedCount, unallocatedCount],
+            backgroundColor: ['#34D399', '#F87171'], // Green and Red
+            borderColor: '#ffffff',
+            borderWidth: 2,
+            hoverOffset: 20
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: {
+                  size: 14,
+                  weight: 'bold'
+                },
+                color: '#333'
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

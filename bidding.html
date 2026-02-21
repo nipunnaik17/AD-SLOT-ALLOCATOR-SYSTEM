@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bid Portal</title>
+  <link rel="stylesheet" href="output.css">
+</head>
+<body class="bg-gradient-to-r from-red-500 to-blue-500 py-10 text-xl font-extrabold animate-fade-in">
+
+  <div class="max-w-md mx-auto p-8 bg-gradient-to-r from-amber-400 to-orange-400 rounded-xl shadow-md transform transition duration-500 hover:scale-105 animate-slide-up">
+    <h1 class="text-2xl font-bold text-center mb-6 animate-fade-in">Place Your Bid</h1>
+
+    <form id="bidForm" class="space-y-4">
+      <div class="transition-all duration-300">
+        <label for="month" class="block font-medium">Select Date</label>
+        <input type="date" id="month" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+      </div>
+
+      <div class="transition-all duration-300">
+        <label for="bidAmount" class="block font-medium">Bid Amount (₹)</label>
+        <input type="number" id="bidAmount" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500" required min="5000" />
+      </div>
+
+      <div class="transition-all duration-300">
+        <label for="adHours" class="block font-medium">Ad Hours (per day)</label>
+        <input type="number" id="adHours" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500" required />
+      </div>
+
+      <button id="submitBtn" type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition transform hover:scale-105 duration-300">
+        Submit Bid
+      </button>
+    </form>
+
+    <p id="bidMessage" class="mt-4 text-center text-lg font-semibold"></p>
+
+    <div class="mt-6 text-center">
+      <a href="result.html" class="inline-block bg-green-600 text-white px-4 py-2 rounded-2xl hover:bg-green-700 transition transform hover:scale-105 duration-300">
+        Check Allocation Results
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("bidForm");
+      const dateInput = document.getElementById("month");
+      const amountInput = document.getElementById("bidAmount");
+      const hoursInput = document.getElementById("adHours");
+
+      const bidMessage = document.getElementById("bidMessage");
+      const submitBtn = document.getElementById("submitBtn");
+
+      const token = localStorage.getItem("token");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const date = dateInput.value;
+        const amount = parseInt(amountInput.value, 10);
+        const hoursPerDay = parseInt(hoursInput.value, 10);
+
+        if (!token) {
+          bidMessage.innerText = "You are not logged in. Please log in first.";
+          bidMessage.className = "mt-4 text-center text-lg font-semibold text-red-600 animate-shake";
+          return;
+        }
+
+        try {
+          const res = await fetch("http://localhost:5000/bid", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ date, amount, hoursPerDay })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            bidMessage.innerText = data.message || "Bid placed successfully!";
+            bidMessage.className = "mt-4 text-center text-lg font-semibold text-green-700 animate-pulse";
+            form.reset();
+          } else {
+            bidMessage.innerText = data.error || data.message || "Failed to place bid.";
+            bidMessage.className = "mt-4 text-center text-lg font-semibold text-red-600 animate-shake";
+          }
+        } catch (err) {
+          console.error(err);
+          bidMessage.innerText = "Error while placing bid.";
+          bidMessage.className = "mt-4 text-center text-lg font-semibold text-red-600 animate-shake";
+        }
+      });
+    });
+  </script>
+
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.6s ease-out forwards;
+    }
+
+    .animate-slide-up {
+      animation: slide-up 0.8s ease-out forwards;
+    }
+
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+</body>
+</html>
